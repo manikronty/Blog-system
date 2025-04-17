@@ -62,10 +62,20 @@ const BlogHome = () => {
       <div className="blog-cards">
       {selectedArticle && (
   <div className="article-detail">
-    <img src={selectedArticle.cover_image || selectedArticle.social_image} alt={selectedArticle.title} />
-    <h2>{selectedArticle.title}</h2>
-    <p>{selectedArticle.user.name}</p>
-    <button onClick={() => setSelectedArticle(null)}>Close</button>
+    <div className='blogart'>
+        <div className='art'>
+        <h2>{selectedArticle.title}</h2>
+            <img className="image" src={selectedArticle.cover_image || selectedArticle.social_image} alt={selectedArticle.title} />
+            <div className="setauthname">
+                <p>Author : {selectedArticle.user.name}</p>
+                <p>Tags : {selectedArticle.tags}</p>
+                
+                <p>Description : {selectedArticle.description}</p>
+            </div>
+            
+            <button onClick={() => setSelectedArticle(null)}>Close</button>
+        </div>
+    </div>
   </div>
 )}
         {filteredArticles.map(article => (
