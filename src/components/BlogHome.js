@@ -12,6 +12,9 @@ const BlogHome = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [likes, setLikes] = useState({});
+  const [comments, setComments] = useState({});
+
   useEffect(() => {
     axios.get('https://dev.to/api/articles')
       .then(res => setArticles(res.data.slice(0, 100)))
@@ -22,6 +25,21 @@ const BlogHome = () => {
   const filteredArticles = articles.filter(article =>
     article.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleLike = (articleId) => {
+    setLikes(prev => ({
+      ...prev,
+      [articleId]: (prev[articleId] || 0) + 1
+    }));
+  };
+
+  const handleComment = (articleId, commentText) => {
+    if (!commentText.trim()) return;
+    setComments(prev => ({
+      ...prev,
+      [articleId]: [...(prev[articleId] || []), commentText]
+    }));
+  };
 
   return (
     <div className="blog-container">
@@ -37,7 +55,7 @@ const BlogHome = () => {
             <div className='art'>
               <img className="image" src={selectedArticle.cover_image || selectedArticle.social_image} alt={selectedArticle.title} />
               <h2>{selectedArticle.title}</h2>
-              <p>{selectedArticle.user.name}</p>
+              <p>Author: {selectedArticle.user.name}</p>
               <p>{selectedArticle.description}</p>
               <button onClick={() => setSelectedArticle(null)}>Close</button>
             </div>
@@ -47,7 +65,15 @@ const BlogHome = () => {
 
       <div className="blog-cards">
         {filteredArticles.map(article => (
-          <ArticleCard key={article.id} article={article} onReadMore={setSelectedArticle} />
+          <ArticleCard
+            key={article.id}
+            article={article}
+            onReadMore={setSelectedArticle}
+            onLike={handleLike}
+            onComment={handleComment}
+            likes={likes[article.id] || 0}
+            comments={comments[article.id] || []}
+          />
         ))}
       </div>
     </div>
